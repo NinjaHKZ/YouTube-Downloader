@@ -6,7 +6,6 @@
   <sub>Print tirada do terminal linux na distro Arch Linux</sub>
 </p>
 
-___
 ## Para usar siga esses comandos:
 > **Python main.py -u "https://www.youtube.com/watch?v=I-GPNPq0vJE" -r 360p -f video -p /home/ninja/videos**
 
