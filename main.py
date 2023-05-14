@@ -132,10 +132,10 @@ def Download(config: dict) -> None:
                 Utils.bestResolution(config, vid)
             
             else:
-                Utils.getByResolution(configuration, vid)
+                Utils.getByResolution(config, vid)
 
         case "audio":
-            Utils.GetAudio(configuration, vid)
+            Utils.GetAudio(config, vid)
 
 
     print("Download finalizado.")
