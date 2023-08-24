@@ -1,158 +1,75 @@
 from pytube import YouTube
-import sys, os
+import asyncio
 
 
-class Utils:
-    def GetFlagsOption(cmd):
-        _newInput = []
-        _inputTuple = []
+class DownloadManager:
+    def __init__(self, urls: list, resolution: tuple, format="video", path=None):
+        self.urls = urls
+        self.resolution = resolution
+        self.format = format
+        self.path = path
+        self.tasks_queue = [] 
+        self.content_filtered = {}
 
-        for i in cmd:
-            if len(_inputTuple) == 1 and i[0] != "-":
-                if i.startswith("https://www.youtube.com/watch?"):
-                    i = i.split("&")[0]
-                
-                _inputTuple.append(i)
-                _newInput.append(tuple(_inputTuple))
-                _inputTuple = []
+    def start(self):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self._sync_manager())
 
+    async def _sync_manager(self):
+
+        for url in self.urls:
+            url_clean = self._url_processing(url)
+
+            if url_clean[1] != 0:
+                self.tasks_queue.append(asyncio.create_task(self._get_stream_data(url_clean[0])))
             else:
-                _inputTuple.append(i)
-                        
+                print(url_clean[0].get('error'), url_clean[2])
 
-        return _newInput
-
-    def getInputData(FlagsInput) -> dict:
-        configuration = {
-            "url": None,
-            "resolution": "best",
-            "vFormat": "video",
-            "file_path": None
-        }
-            
-        for i in FlagsInput:
-            match i[0]:
-                case "-u":
-                    if i[1].startswith("https://www.youtube.com/watch?"):
-                        configuration["url"] = i[1]
-                    else:
-                        print("Url inválida")
-                
-                case "-r":
-                    configuration["resolution"] = i[1]
-                
-                case "-f":
-                    if i[1] in ['video', 'audio']:
-                        configuration["vFormat"] = i[1]
-                case "-p":
-                    configuration["file_path"] = i[1]
-
-        return configuration
-
-    def checkUrl(url):
-        try:
-            return YouTube(url)
-
-        except Exception:
-            exit()
-
-    def bestResolution(cfg, videos):
-        vid = videos.streams.filter(progressive=True).get_highest_resolution()
-        vid_title = vid.title
-        vid_size = vid.filesize_mb
-        vid_extension = vid.mime_type.split("/")[1] if vid.mime_type.split("/")[1] != "3gpp" else "mp4"
-        vid_resolution = vid.resolution
-
-        vid_name = "{}_|++|_[ {} ].{}".format(vid_title, vid_resolution, vid_extension) 
-
-        print("\nbaixando o vídeo...\nNome: {}\nTamanho: {}\n".format(vid_title, vid_size))
-     
-        vid.download(output_path=cfg.get("file_path"), filename=vid_name)
-
-    def getByResolution(cfg, videos_B):
-        videos = videos_B.streams.filter(res=cfg.get("resolution"), progressive=True)
+        if len(self.tasks_queue) != 0:
+            await asyncio.gather(*self.tasks_queue)
         
-        if len(videos) != 0:
-            vid = videos.get_highest_resolution()
-            vid_title = vid.title
-            vid_size = vid.filesize_mb
-            vid_extension = vid.mime_type.split("/")[1] if vid.mime_type.split("/")[1] != "3gpp" else "mp4"
-            vid_resolution = vid.resolution
+        else:
+            return {"error": "All URLs passed are invalid."}, 0, self.urls
 
-            vid_name = "{}_|++|_[ {} ].{}".format(vid_title, vid_resolution, vid_extension) 
+    async def _get_stream_data(self, url):
+        request_results = YouTube(url)
+        self.content_filtered.update({request_results.title: {}})
+        
+        for data in request_results.streaming_data['formats']:
+            self.content_filtered[request_results.title].update({data["itag"]: {}})
+            await asyncio.sleep(0.015)
+            dict_filter_type = {
+                "itag": data['itag'],
+                "mimeType": data['mimeType'],
+                "media_url": data['url'],
+                "vide_quality": data["quality"],
+                "audio_quality": data['audioQuality'],
+                "midia_fps": data['fps'],
+                "height_resolution": data["qualityLabel"]
 
-            print("\nbaixando o vídeo...\nNome: {}\nTamanho: {}\n".format(vid_title, vid_size))    
+            }
+
+            self.content_filtered[request_results.title][dict_filter_type['itag']].update(dict_filter_type)
+
             
-            vid.download(output_path=cfg.get("file_path"), filename=vid_name)
+    def _url_processing(self, url):
+        if url.startswith("https://") == True:
+            return url, 1
 
-        else:           
-            videos = videos_B.streams.filter(progressive=True).order_by("resolution")
+        elif len(url) == 11:
+            return "https://www.youtube.com/watch?v="+url, 1
 
-            vid_list = {}
+        else:
+            return {'error': 'Use only LINK or ID from video.'}, 0, "\ninvalid Option: "+url
 
-            for i in enumerate(videos):
-                vid_list.update({i[0]: i[1]})
             
-            del videos
-
-            vid_list = vid_list[round(len(vid_list)/2)]
-
-            vid_title = vid_list.title
-            vid_size = vid_list.filesize_mb
-            vid_extension = vid_list.mime_type.split("/")[1] if vid_list.mime_type.split("/")[1] != "3gpp" else "mp4"
-            vid_resolution = vid_list.resolution
-
-            vid_name = "{}_|++|_[ {} ].{}".format(vid_title, vid_resolution, vid_extension) 
-
-            print("\nbaixando o vídeo...\nNome: {}\nTamanho: {}\n".format(vid_title, vid_size))
-
-            vid_list.download(output_path=cfg.get('file_path'), filename=vid_name)
-
-    def GetAudio(config, vid):
-            vid = vid.streams.get_audio_only()
-
-            vid_title = vid.title
-            vid_size = vid.filesize_mb
-            vid_extension = vid.mime_type.split("/")[1] if vid.mime_type.split("/")[1] != "3gpp" else "mp4"
-            vid_resolution = vid.resolution
-
-            vid_name = "{}_|++|_[ {} ].{}".format(vid_title, vid_resolution, vid_extension) 
-
-            print("\nbaixando o vídeo...\nNome: {}\nTamanho: {}\n".format(vid_title, vid_size))
-
-            vid.download(output_path=config.get("file_path"), filename=vid_name)
-    
-def Download(config: dict) -> None:
-    
-    vid = Utils.checkUrl(config.get('url'))
-
-    match config.get('vFormat'):
-        case "video":
-            if config.get('resolution') == "best":
-                Utils.bestResolution(config, vid)
-            
-            else:
-                Utils.getByResolution(config, vid)
-
-        case "audio":
-            Utils.GetAudio(config, vid)
 
 
-    print("Download finalizado.")
-    sys.exit()
 
 if __name__ == "__main__":
-    try:
-        print("caso esteja usando no linux, é recomendável passar os argumentos que contenha '&' em aspas(\"https://www.youtube.com/watch?v=XXXXXX&List=XXXXXXX\") ")
-        cmd = sys.argv[1:]
-        
-        FlagsInput = Utils.GetFlagsOption(cmd)
+    url = ["A2HCiEX7hyc1", "https://www.youtube.com/watch?v=-QBuXSGQ9fM&list=RDMM&index=11&ab_channel=RodrigoZin", "https://www.youtube.com/watch?v=vjKEFyzR9EQ&ab_channel=CanaldoSchwarza"]
+    resolution = "144p"
+    format = "video"
+    path = "baixados/"
 
-        if len(FlagsInput[0]) == 0:
-            print("python "+sys.argv[0]+" -u <URL> -r <RESOLUÇÃO> -f <VIDEO/AUDIO> -p <CAMINHO PARA SALVAR>")
-            exit()
-
-        Download(Utils.getInputData(FlagsInput))
-
-    except KeyboardInterrupt:
-        print("\ndownload cancelado.")
+    DownloadManager(url, resolution, format, path).start()
