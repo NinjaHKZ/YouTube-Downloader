@@ -17,22 +17,14 @@ class DownloadManager:
         self.content_filtered = {}
 
         self.itag_identifier = {
-            18: "360",
-            22: "720",
-            37: "1080",
-            38: "3072",
-            251: "144(low_quaity)",
-            278: "144(webm)",
-            160: "144(mp4)",
-            140: "AAC(128_kbps)",
-            141: "MP4(256_Kbps)",
-            171: "WebM(128_Kbps)",
-            172: "WebM(256_Kbps)",
-            249: "WebM(50_Kbps_Opus)",
-            250: "WebM(70_Kbps_Opus)",
-            251: "WebM(160_Kbps_Opus)",
-            256: "WebM(190_Kbps_Opus)",
-        }
+            18: ("360", "mp4"),
+            22: ("720", "mp4"),
+            37: ("1080", "mp4"),
+            38: ("3072", "mp4"),
+            251: ("144(low_quaity)", "mp4"),
+            278: ("144(webm)", "webm"),
+            160: ("144(mp4)", "mp4")
+            }
 
     def start(self):
         loop = asyncio.get_event_loop()
@@ -73,6 +65,8 @@ class DownloadManager:
             
             await asyncio.sleep(0.015)
             dict_filter_type = {
+                "name": request_results.title,
+                "creator_name": request_results.author,
                 "itag": data['itag'],
                 "mimeType": data['mimeType'],
                 "media_url": data['url'],
@@ -94,10 +88,13 @@ class DownloadManager:
                     await asyncio.sleep(0.015)
                     
                     if itags[0] in list(self.itag_identifier.keys()):
-                        print("sim", itags[1], self.itag_identifier[itags[0]], end='\n\n\n\n\n\n')
+                            title = "{}+{}+{}.{}".format(itags[1]['name'], itags[1]['creator_name'], itags[1]["height_resolution"], self.itag_identifier[itags[0]][1])
+                            print(title)
+                            #print("sim", itags[1], self.itag_identifier[itags[0]], end='\n\n\n\n\n\n')
 
                     else:
-                        print("processo não suportado", itags[1], itags[0])
+                        pass
+                       # print("processo não suportado", itags[1], itags[0])
             
             else:
                 pass
@@ -120,7 +117,7 @@ class DownloadManager:
 
 
 if __name__ == "__main__":
-    url = ["A2HCiEX7hyc", "https://www.youtube.com/watch?v=-QBuXSGQ9fM&list=RDMM&index=11&ab_channel=RodrigoZin", "https://www.youtube.com/watch?v=vjKEFyzR9EQ&ab_channel=CanaldoSchwarza"]
+    url = ["MJo4aUZJCa8"]
     resolution = "144p"
     format = "video"
     path = "baixados/"
