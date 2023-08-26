@@ -1,31 +1,53 @@
 from pytube import YouTube
 import asyncio, json
 from itertools import zip_longest
-
+from DownloadCore import DownloadEngine
+from ArgsCore import ArgEngine
 # sync youtube account to get playlists from channel 
 
 class DownloadManager:
-    def __init__(self, urls: list, resolution: tuple, format="video", path=None):
-        self.urls = urls
-        self.resolution = resolution
-        self.format = format
-        self.path = path
+    def __init__(self):
+            
+        arguments = ArgEngine.Start()
+        arguments.url = set(arguments.url)
+        
+        self.urls = [res.replace(',', '') for res in arguments.url]
+        try:
+            self.resolution = [int(res.replace(',', '')) for res in arguments.resolution]
+        except ValueError:
+            print('resolutions must be int.')
+            exit()
 
-        self.simultaneous_task = 2
+        self.format = arguments.mediatype
+        self.path = arguments.path
+        self.simultaneous_task = arguments.url_per_tasks
 
         self.tasks_queue = [] 
         self.content_filtered = {}
 
         self.itag_identifier = {
-            18: ("360", "mp4"),
-            22: ("720", "mp4"),
-            37: ("1080", "mp4"),
-            38: ("3072", "mp4"),
-            251: ("144(low_quaity)", "mp4"),
-            278: ("144(webm)", "webm"),
-            160: ("144(mp4)", "mp4")
+            18: (360, "mp4"),
+            22: (720, "mp4"),
+            37: (1080, "mp4"),
+            38: (3072, "mp4"),
+            160: (144, "mp4")
             }
 
+        sup_resolutions = [res[0] for res in list(self.itag_identifier.values())]
+        remove_resolutions = []
+        
+        for res in enumerate(self.resolution):
+            if res[1] not in sup_resolutions:
+                remove_resolutions.append(res[1])
+                
+        
+        if len(self.resolution) == len(remove_resolutions):
+            self.resolution = [360]
+
+        elif len(remove_resolutions) != 0:
+            for index in remove_resolutions:
+                self.resolution.remove(index)
+        
     def start(self):
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self._sync_manager())
@@ -81,6 +103,7 @@ class DownloadManager:
             self.content_filtered[request_results.title][dict_filter_type['itag']].update(dict_filter_type)
 
     async def _start_download(self, content):
+        content_for_downlaod = []
         
         for content_dict in content:
             if content_dict != None:
@@ -88,18 +111,17 @@ class DownloadManager:
                     await asyncio.sleep(0.015)
                     
                     if itags[0] in list(self.itag_identifier.keys()):
-                            title = "{}+{}+{}.{}".format(itags[1]['name'], itags[1]['creator_name'], itags[1]["height_resolution"], self.itag_identifier[itags[0]][1])
-                            print(title)
-                            #print("sim", itags[1], self.itag_identifier[itags[0]], end='\n\n\n\n\n\n')
+                            if self.itag_identifier[itags[0]][0] in self.resolution:
+                                title = "{}{} {} {}.{}".format(self.path, itags[1]["height_resolution"], itags[1]['name'], itags[1]['creator_name'], self.itag_identifier[itags[0]][1])
+                                content_for_downlaod.append((itags[1].get('media_url'), title.replace(' ', '+'), self.path))
 
                     else:
                         pass
                        # print("processo não suportado", itags[1], itags[0])
-            
             else:
                 pass
+        await DownloadEngine(content_for_downlaod).start()
         
-        print('finish')
 
 
     def _url_processing(self, url):
@@ -111,15 +133,9 @@ class DownloadManager:
 
         else:
             return {'error': 'Use only LINK or ID from video.'}, 0, "\ninvalid Option: "+url
-
             
 
 
 
 if __name__ == "__main__":
-    url = ["MJo4aUZJCa8"]
-    resolution = "144p"
-    format = "video"
-    path = "baixados/"
-
-    DownloadManager(url, resolution, format, path).start()
+    DownloadManager().start()
