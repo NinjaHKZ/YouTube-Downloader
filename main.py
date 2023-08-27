@@ -134,7 +134,7 @@ class DownloadManager:
             if content_dict != None:
                 for itags in content_dict[1].items():
                     await asyncio.sleep(0.015)
-                    print(content_dict)
+
                     if itags[0] in list(self.itag_identifier.keys()):
                         if self.media_type == "video":
                             if self.itag_identifier[itags[0]][0] in self.resolution:

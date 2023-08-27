@@ -5,9 +5,9 @@ class ArgEngine:
     def Start():
         args = argparse.ArgumentParser(
             prog="YoutubeDownloader - Baixador e conversor de vídeos".title(),
-            description="Um baixador de vídeos, músicas(em desenvolvimento) e tudo mais!\n\
-            Possuí um poderoso sistema de download múltiplos e uma ferramente de conversão inbutido(em desenvolvimento) para facilitar o usuário!\n",
-            usage="python main.py -u URL/ID -mt VIDEO/AUDIO -r [RESOLUTIONS]",
+            description="Um baixador de vídeos, músicas e tudo mais!\n\
+            Possuí um poderoso sistema de download múltiplos e uma ferramente de conversão inbutido(em desenvolvimento) para facilitar a vida do usuário!\n",
+            usage="python main.py -u URL/ID -m VIDEO/AUDIO -r [RESOLUTIONS]",
             epilog="Powered With Python Power - NinjaHKZ [Devloped By Dev.Marcos H. Albach]"
         )
 
