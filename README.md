@@ -11,7 +11,7 @@
 
 - ❗ **Achei um erro, o que posso fazer?** Caso encontre algum erro durante o uso, você pode contribuir com nosso projeto corrigindo o erro e fazendo pull requests ou simplesmente abrindo uma issue para assim então corrigirmos o erro o mais rápido possível, também poderá entrar em contato com o desenvolvedor para realizar o report pelo próprio software!
 
-###### 🐍 Made with Python Power 🎖 Coded By NinjaHKZ [ Dev. Marcos H. Albach ] 
+###### 🐍 Made with Python Power 🎖 Coded By NinjaHKZ [ Dev. Marcos H. Albach ] 🍝 [NinjaHKZ Apoia-se](https://apoia.se/ninja_hkz)
 
 ## 🛠️INSTRUÇÃO DE USO🛠️
 
@@ -49,4 +49,4 @@ LT8C5kYwcpA&
 LT8C5kYwcp
 ```
 
-# 
+###### Esse projeto foi realizado com boas intenções, a utilização indevida do software é de responsabilidade do usuário.
