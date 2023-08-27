@@ -13,5 +13,38 @@
 
 ###### 🐍 Made with Python Power 🎖 Coded By NinjaHKZ [ Dev. Marcos H. Albach ] 
 
+## 🛠️INSTRUÇÃO DE USO🛠️
 
-## In development...
+⭐Nessa parte iremos abordar a utilização e funcionalidades do programa, comandos, argumentos e outros pontos a respeito de sua utilização!
+
+> ![image](https://github.com/NinjaHKZ/YouTube-Downloader/assets/100825381/98cda3af-8caa-4b17-9f09-5320bd95d2c6) 
+> ![image](https://github.com/NinjaHKZ/YouTube-Downloader/assets/100825381/53a5b3bb-1bc5-4d7f-8d23-3b7c6ebab65f)  
+
+### Overview Básico:
+```console
+python .\main.py -u jKvcHQZP540 -m video -r 360, 720, 1080 
+```
+
+| ARGUMENTO | ABREVIAÇÃO | TIPO | FUNÇÃO |
+|-----------|------------|------|--------|
+| **--url**  | _-u_ | string/arquivo | passa url, id ou um arquivo de texto com as urls para download |
+| **--mediatype** | _-m_ | string | passa o tipo de media que deseja, sendo video ou audio |
+| **--resolution** | _-r_ | list | define uma lista de resoluções para baixar |
+| **--path** | _-p_ | string | define a pasta onde os downloads devem ser inseridos |
+| **--url_per_tasks** | _-utasks_ | int | define o tanto de downloads por tasks(1 para baixar todos ao mesmo tempo) | 
+
+
+### Baixando Links Salvos Em Um Arquivo:
+✨ Para baixar uma lista de urls salvos em um arquivo é simples, basta inserir as url em um arquivo de texto e depois de salvo, passar ele como argumento(pode ser passado mais de 1 arquivo)
+```console
+python main.py -u jKvcHQZP540, url_id.txt -m video -r 360, 720, 1080
+```
+![image](https://github.com/NinjaHKZ/YouTube-Downloader/assets/100825381/8a224bc3-2e73-4795-8561-2bb6c92bbc9d)
+> A estrutura do arquivo deve ser dessa forma:
+```html
+https://www.youtube.com/watch?v=PPyuq7G0BZ0&ab_channel=RodrigoZin-Topic
+https://www.youtube.com/watch?v=9p3l1lr9G1M&ab_channel=RodrigoZin
+https://www.youtube.com/watch?v=pWomJnHKWsE&ab_channel=RodrigoZin
+LT8C5kYwcpA&
+LT8C5kYwcp
+```
