@@ -21,8 +21,14 @@
 > ![image](https://github.com/NinjaHKZ/YouTube-Downloader/assets/100825381/53a5b3bb-1bc5-4d7f-8d23-3b7c6ebab65f)  
 
 ### Overview Básico:
+Primeiro baixamos os módulos necessários rodando o comando:
 ```console
-python .\main.py -u jKvcHQZP540 -m video -r 360, 720, 1080 
+python setup_software.py
+```
+ Depois testamos o baixador:
+
+```console
+python main.py -u jKvcHQZP540 -m video -r 360, 720, 1080 
 ```
 
 | ARGUMENTO | ABREVIAÇÃO | TIPO | FUNÇÃO |
