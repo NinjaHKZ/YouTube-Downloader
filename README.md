@@ -31,6 +31,8 @@ python setup_software.py
 python main.py -u jKvcHQZP540 -m video -r 360, 720, 1080 
 ```
 
+Observação aqui, no windows cmd deve ser retirado o simbolo de & dos videos, o cmd ele interpreta "errado" os comandos.
+
 | ARGUMENTO | ABREVIAÇÃO | TIPO | FUNÇÃO |
 |-----------|------------|------|--------|
 | **--url**  | _-u_ | string/arquivo | passa url, id ou um arquivo de texto com as urls para download |
