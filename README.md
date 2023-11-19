@@ -21,6 +21,8 @@
 > ![image](https://github.com/NinjaHKZ/YouTube-Downloader/assets/100825381/53a5b3bb-1bc5-4d7f-8d23-3b7c6ebab65f)  
 
 ### Overview Básico:
+É necessário ter o **Microsoft Visual C++ 14.0** Instalado para que seja possível a instalação dos módulos. 
+
 Primeiro baixamos os módulos necessários rodando o comando:
 ```console
 python setup_software.py
