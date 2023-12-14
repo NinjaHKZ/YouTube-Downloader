@@ -9,7 +9,7 @@ class DownloadEngine:
     async def start(self):
         for url_tuples in self.url:
             url = url_tuples[0]
-            name = url_tuples[1]         
+            name = url_tuples[1]
             path = url_tuples[2]
             
             self._file_exists(url, name, path)         
@@ -44,7 +44,7 @@ class DownloadEngine:
                         byte_final += 700000
                     
                 
-                    with open(name, 'ab') as r:
+                    with open(name, "ab") as r:
                         r.write(await data.content.read())
                     
         

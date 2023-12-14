@@ -154,7 +154,7 @@ class DownloadManager:
                         if self.media_type == "video":
                             if self.itag_identifier[itags[0]][0] in self.resolution:
 
-                                title = "{}{} {} {}.{}".format(self.path, itags[1]["height_resolution"], itags[1]['name'], itags[1]['creator_name'], self.itag_identifier[itags[0]][1])
+                                title = "{}{}+{}+{}.{}".format(self.path, itags[1]["height_resolution"], itags[1]['name'].replace("\"", ""), itags[1]['creator_name'], self.itag_identifier[itags[0]][1])
                                 content_for_downlaod.append((itags[1].get('media_url'), title, self.path))
                             else:
                                 continue
